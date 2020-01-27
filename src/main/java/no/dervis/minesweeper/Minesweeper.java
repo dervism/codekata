@@ -14,7 +14,7 @@ public class Minesweeper {
     public static final Logger log = LoggerFactory.getLogger(Minesweeper.class);
 
     public String play(String input) throws IOException {
-        Predicate<Integer> p = n -> 0 < n && n <= 100;
+        Predicate<Integer> predicate = n -> 0 < n && n <= 100;
         LineNumberReader r = new LineNumberReader(new StringReader(input));
         StringBuilder b = new StringBuilder();
         String line = "";
@@ -30,7 +30,8 @@ public class Minesweeper {
                 b.append("Field #").append(++fieldCount).append(':').append(System.lineSeparator());
                 int n = Integer.parseInt(matcher.group(1));
                 int m = Integer.parseInt(matcher.group(2));
-                if (!(p.test(n) && p.test(m))) throw new RuntimeException("Line " + r.getLineNumber() + " is out of bounds (0 < n,m <= 100)");
+                if (!(predicate.test(n) && predicate.test(m)))
+                    throw new RuntimeException("Line " + r.getLineNumber() + " is out of bounds (0 < n,m <= 100)");
                 log.debug("Found field header: " + n + "," + m);
 
                 // read field
@@ -46,6 +47,21 @@ public class Minesweeper {
         }
 
         return b.toString();
+    }
+
+    /**
+     * Alternative first line split.
+     * int n = splitAndRead(line)[0];
+     * int m = splitAndRead(line)[1];
+     *
+     * Note: Be aware of possible errors in formatting!
+     */
+    public int[] splitAndRead(String line) {
+        String[] split = line.split(" ");
+        if (split == null || split.length == 0) throw new RuntimeException();
+        int n = Integer.parseInt(split[0]);
+        int m = Integer.parseInt(split[1]);
+        return new int[] {n, m};
     }
 
     private StringBuilder readField(LineNumberReader r, int n, int m) throws IOException {

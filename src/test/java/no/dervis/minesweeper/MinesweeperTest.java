@@ -35,13 +35,11 @@ class MinesweeperTest {
 
     @Test
     void testThrowsExceptionOnWrongColLength() {
-        assertThrows(RuntimeException.class, () -> new Minesweeper().play(TestData.wrongColLength)
-        );
+        assertThrows(RuntimeException.class, () -> new Minesweeper().play(TestData.wrongColLength) );
     }
 
     @Test
     void testThrowsExceptionOnWrongFieldSize() {
-        assertThrows(RuntimeException.class, () -> new Minesweeper().play(TestData.wrongFieldSize)
-        );
+        assertThrows(RuntimeException.class, () -> new Minesweeper().play(TestData.wrongFieldSize) );
     }
 }

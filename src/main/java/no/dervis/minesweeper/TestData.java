@@ -76,7 +76,7 @@ public class TestData {
             """;
 
     public static final String wrongFieldSize = """
-            -1 100
+            1 101
             *
             0 0
             """;
