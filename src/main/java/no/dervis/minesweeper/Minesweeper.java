@@ -36,6 +36,7 @@ public class Minesweeper {
 
                 // read field
                 StringBuilder field = readField(r, n, m);
+
                 //StringBuilder updated = calc(field, n, m);
 
                 for (int i = 0; i < n*m; i++) {
