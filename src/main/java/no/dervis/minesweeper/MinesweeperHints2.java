@@ -10,7 +10,7 @@ public class MinesweeperHints2 {
             int mines = 0, row = i / columns, column = i % columns;
             if (field.charAt(i) == '*') continue;
 
-            int[][] dimentions = new int[][] {
+            int[][] dimensions = new int[][] {
                     {row - 1, column},
                     {row, column - 1},
                     {row, column + 1},
@@ -22,8 +22,8 @@ public class MinesweeperHints2 {
                     {row - 1 , column + 1}
             };
 
-            for (int[] dimention : dimentions) {
-                if (isMine(dimention, rows, columns, field)) mines++;
+            for (int[] dimension : dimensions) {
+                if (isMine(dimension, rows, columns, field)) mines++;
             }
 
             field.setCharAt(i, Character.forDigit(mines, 10));
