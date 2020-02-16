@@ -80,4 +80,10 @@ public class TestData {
             *
             0 0
             """;
+
+    public static final String rowColStr = """
+            *...
+            ....
+            ....
+            """;
 }
