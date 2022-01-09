@@ -1,5 +1,10 @@
-# code-kata
+# codekata
 
+The projects includes implementations for known code katas.
 
-- Complete implementation of the Minesweeper kata, with two different Hint-implementations.
-http://codingdojo.org/kata/Minesweeper/
+- Minesweeper
+- Yatzy
+- Poker hand simulator
+- Roman numerals
+- Text number to sum
+- Number to text
