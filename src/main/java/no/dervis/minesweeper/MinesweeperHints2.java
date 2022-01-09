@@ -22,7 +22,7 @@ public class MinesweeperHints2 {
             };
 
             for (int[] dimension : dimensions) {
-                if (isMine(dimension, rows, columns, field)) mines++;
+                if (isAMine(dimension, rows, columns, field)) mines++;
             }
 
             if (field.charAt(i) != '*') field.setCharAt(i, Character.forDigit(mines, 10));
@@ -31,7 +31,7 @@ public class MinesweeperHints2 {
         return new StringBuilder(field.toString());
     }
 
-    private static boolean isMine(int[] dimention, int rows, int columns, StringBuilder field) {
+    private static boolean isAMine(int[] dimention, int rows, int columns, StringBuilder field) {
         BiPredicate<Integer, Integer> p = (k, j) -> k >= 0 && k < j;
         return p.test(dimention[0], rows) && p.test(dimention[1], columns) && field.charAt(columns * dimention[0] + dimention[1]) == '*';
     }
