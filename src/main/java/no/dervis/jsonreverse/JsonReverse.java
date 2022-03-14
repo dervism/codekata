@@ -18,11 +18,11 @@ import java.util.stream.IntStream;
 public class JsonReverse {
 
     // algebraic type definitions
-    sealed interface Node<V> permits StringNode, MapNode, ListNode, IntNode { V value(); }
-    record StringNode(String value) implements Node<String> {}
-    record IntNode(Integer value) implements Node<Integer> {}
-    record MapNode(Map<String, Node<?>> value) implements Node<Map<String, Node<?>>> {}
-    record ListNode(List<? extends Node<?>> value) implements Node<List<? extends Node<?>>> {}
+    sealed interface Node permits StringNode, MapNode, ListNode, IntNode { }
+    record StringNode(String value) implements Node {}
+    record IntNode(Integer value) implements Node {}
+    record MapNode(Map<String, Node> value) implements Node {}
+    record ListNode(List<Node> value) implements Node {}
 
     // function that makes char array to list of strings
     static final Function<char[], List<String>> toListFn = array ->
@@ -38,23 +38,25 @@ public class JsonReverse {
                             (a, b) ->  a))
             .stream().map(Object::toString).collect(Collectors.joining());
 
-    // function that transf orms a string into another string
+    // composed function that reverses a string
     static final Function<String, String> transformFn = s -> reverseFn.compose(toListFn).apply(s.toCharArray());
 
     // mapping function that, given a string and a mapping function, produces another string
-    static final BiFunction<String, Function<String, String>, String> tranform = String::transform;
+    static final BiFunction<String, Function<String, String>, String> transform = String::transform;
 
-    static final Function<String, String> reverseStringFn = s -> tranform.apply(s, transformFn);
+    // function that reverses a string using a transform function
+    static final Function<String, String> reverseStringFn = s -> transform.apply(s, transformFn);
 
-    public static Node<?> parseNode(JsonNode node) {
+    // custom deserializer to map to our own types
+    public static Node parseNode(JsonNode node) {
         return switch (node) {
             case ArrayNode a -> {
-                final var list = new LinkedList<Node<?>>();
+                final var list = new LinkedList<Node>();
                 a.forEach(element -> list.add(parseNode(element)));
                 yield new ListNode(list);
             }
             case ObjectNode o -> {
-                final var map = new LinkedHashMap<String, Node<?>>();
+                final var map = new LinkedHashMap<String, Node>();
                 o.fields().forEachRemaining(entrySet -> map.put(entrySet.getKey(), parseNode(entrySet.getValue())));
                 yield new MapNode(map);
             }
