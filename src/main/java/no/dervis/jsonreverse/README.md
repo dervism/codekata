@@ -1,4 +1,4 @@
-# minesweeper-kata
+# reverse json string kata
 
 Takes in a Json string and reverses the string values it contains:
 
