@@ -2,6 +2,7 @@
 
 The projects includes implementations for known code katas.
 
+- [Reverse Json String](src/main/java/no/dervis/jsonreverse)
 - [Minesweeper](src/main/java/no/dervis/minesweeper)
 - [Yatzy](src/main/java/no/dervis/yatzy)
 - [Poker hand simulator](src/main/java/no/dervis/pokerhandkata)
