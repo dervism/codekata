@@ -8,12 +8,16 @@ import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
+
+import static java.util.Spliterators.spliteratorUnknownSize;
 
 public class JsonReverse {
 
@@ -50,16 +54,16 @@ public class JsonReverse {
     // custom deserializer to map to our own types
     public static Node parseNode(JsonNode node) {
         return switch (node) {
-            case ArrayNode a -> {
-                final var list = new LinkedList<Node>();
-                a.forEach(element -> list.add(parseNode(element)));
-                yield new ListNode(list);
-            }
-            case ObjectNode o -> {
-                final var map = new LinkedHashMap<String, Node>();
-                o.fields().forEachRemaining(entrySet -> map.put(entrySet.getKey(), parseNode(entrySet.getValue())));
-                yield new MapNode(map);
-            }
+            case ArrayNode a ->
+                    new ListNode(StreamSupport
+                        .stream(spliteratorUnknownSize(a.iterator(), Spliterator.ORDERED), false)
+                        .map(JsonReverse::parseNode)
+                        .toList());
+            case ObjectNode o ->
+                    new MapNode(StreamSupport
+                        .stream(spliteratorUnknownSize(o.fields(), Spliterator.ORDERED), false)
+                        .map(e -> new SimpleImmutableEntry<>(e.getKey(), parseNode(e.getValue())))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> y, LinkedHashMap::new)));
             case TextNode a -> new StringNode( reverseStringFn.apply(a.textValue()));
             case NumericNode a -> new IntNode(a.intValue());
             default -> throw new RuntimeException("What is this?! ");
@@ -67,7 +71,6 @@ public class JsonReverse {
     }
 
     public static void main(String[] args) throws JsonProcessingException {
-
         JsonNode node = new ObjectMapper().readTree("""
                 {"a": [1, {"b": [2, {"c": "Hello,"}]}, {"b": [{"c": "world!"}]}]}
                 """);
