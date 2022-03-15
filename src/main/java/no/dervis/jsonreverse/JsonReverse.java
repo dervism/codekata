@@ -18,6 +18,7 @@ import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 import static java.util.Spliterators.spliteratorUnknownSize;
+import static java.util.stream.Collectors.toMap;
 
 public class JsonReverse {
 
@@ -63,8 +64,8 @@ public class JsonReverse {
                     new MapNode(StreamSupport
                         .stream(spliteratorUnknownSize(o.fields(), Spliterator.ORDERED), false)
                         .map(e -> new SimpleImmutableEntry<>(e.getKey(), parseNode(e.getValue())))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> y, LinkedHashMap::new)));
-            case TextNode a -> new StringNode( reverseStringFn.apply(a.textValue()));
+                        .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> y, LinkedHashMap::new)));
+            case TextNode a -> new StringNode(reverseStringFn.apply(a.textValue()));
             case NumericNode a -> new IntNode(a.intValue());
             default -> throw new RuntimeException("What is this?! ");
         };
